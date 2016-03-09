@@ -20,33 +20,90 @@ syn match   dmFloat     "\<\d\+[Ee][-+]\?\d\+\>"
 
 syn region  dmString    start=/"/ skip=/\\"/ end=/"/
 syn region  dmString    start=/'/ skip=/\\'/ end=/'/
+" TODO: contains string interpolation with variables, escape codes
 
 syn keyword dmTodo      TODO FIXME XXX NOTE
 syn region  dmComment   start="/\*" end="\*/" keepend contains=dmTodo
-syn region  dmComment   start="//" end="$" keepend
+syn region  dmComment   start="//" end="$" keepend contains=dmTodo
 
+" TODO: Better handling for for/if
 syn keyword dmKeywordControl    sleep spawn break continue do
 syn keyword dmKeywordControl    else for goto if return switch while
 
 syn keyword dmKeywordMemory     new del
 
-syn keyword dmType  var proc verb datum obj mob turf area savefile list
-syn keyword dmType  client sound image database matrix regex exception text
-syn match   dmType  #atom\(/movable\)\?#
+syn keyword dmTypeAtom  var proc verb datum obj mob turf area savefile list
+syn keyword dmTypeAtom  client sound image database matrix regex exception
+syn keyword dmTypeAtom  null text atom
 
-syn keyword dmTypeModifier  as const global set static tmp
+"syn match   dmType  "(var|proc|verb|datum|obj|mob|turf|area|savefile|list|client|sound|image|database|matrix|regex|exception|null|text|atom)\s*|?" contains=dmTypeAtom nextgroup=dmType skipwhite
+" TODO: Still needed or not?
 
-"syn match   dmOperator  /\s*\s/
-"syn match   dmOperator  /./
-"syn match   dmOperator  /:/
+syn keyword dmTypeModifier  const global set static tmp
+syn keyword dmTypeDeclaration  as "  nextgroup=dmType
 
-syn keyword dmObjectProperty    name gendder desc suffix text icon
-syn match   dmObjectProperty    /icon_state/
-syn keyword dmObjectProperty    dir overlays underlays visibility luminosity
-syn keyword dmObjectProperty    opacity density contents verbs type
-syn keyword dmObjectLocation    loc x y z
-syn keyword dmObjectMobProperty key ckey client sight group
+syn match   dmOperatorBool      /!/
+syn match   dmOperatorBool      /&&/
+syn match   dmOperatorBool      /||/
+syn match   dmOperatorComp      /==/
+syn match   dmOperatorComp      /!=/
+syn match   dmOperatorComp      /<>/
+syn match   dmOperatorComp      /</
+syn match   dmOperatorComp      />/
+syn match   dmOperatorComp      /<=/
+syn match   dmOperatorComp      />=/
+syn match   dmOperatorMath      /\s+\s/
+syn match   dmOperatorMath      /\s-/
+syn match   dmOperatorMath      /\s\*\s/
+syn match   dmOperatorMath      /\s\/\s/
+syn match   dmOperatorMath      /\s\*\*\s/
+syn match   dmOperatorMath      /\s%\s/
+syn match   dmOperatorMath      /++/
+syn match   dmOperatorMath      /--/
+syn match   dmOperatorBit       /\~/
+syn match   dmOperatorBit       /&/
+syn match   dmOperatorBit       /|/
+syn match   dmOperatorBit       /\^/
+syn match   dmOperatorBit       />>/
+syn match   dmOperatorBit       /<</
+syn match   dmOperatorAssign    /=/
+syn match   dmOperatorAssignMath    /+=/
+syn match   dmOperatorAssignMath    /-=/
+syn match   dmOperatorAssignMath    /*=/
+syn match   dmOperatorAssignMath    /\/=/
+syn match   dmOperatorAssignMath    /**=/
+syn match   dmOperatorAssignMath    /%=/
+syn match   dmOperatorAssignBit     /&=/
+syn match   dmOperatorAssignBit     /|=/
+syn match   dmOperatorAssignBit     /^=/
 
+syn match   dmOperatorConditional   /\s\?\s/ms=s+1,me=e-1
+syn match   dmOperatorConditional   /\s:\s/ms=s+1,me=e-1
+
+syn match   dmOperatorDereference   /\w\.\w/ms=s+1,me=e-1
+syn match   dmOperatorDereference   /\w:\w/ms=s+1,me=e-1
+
+syn match   dmOperatorLookup        /\s\.\w/ms=s+1,me=e-1
+
+syn match   dmOperatorParent        /\.\.\ze\s*(/
+
+syn keyword dmOperatorContains      in
+
+" TODO broken around keywords. eg. /obj/item
+syn match   dmOperatorPath          /\w\/\w/ms=s+1,me=e-1
+syn match   dmOperatorPath          /^\s*\/\ze[^*\/]/
+
+syn region  dmBlock         start="{" end="}" transparent fold
+syn region  dmParen         start="(" end=")" transparent
+
+"syn keyword dmObjectProperty    name gender desc suffix text icon
+"syn match   dmObjectProperty    /icon_state/
+"syn keyword dmObjectProperty    dir overlays underlays visibility luminosity
+"syn keyword dmObjectProperty    opacity density contents verbs type
+"syn keyword dmObjectLocation    loc x y z
+"syn keyword dmObjectMobProperty key ckey client sight group
+"syn keyword dmVerbProperty      name desc category hidden src
+"syn match   dmVariableSelf      /\<\.\>/  " TODO make sure this is matched only by itself
 
 if version >= 508 || !exists("did_dreammaker_syn_inits")
   if version < 508
@@ -62,12 +119,24 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmKeywordControl   Keyword
   HiLink dmKeywordMemory    Keyword
 
-  HiLink dmType         Type
-  HiLink dmTypeModifier PreProc  " TODO Custom type for this
+  HiLink dmTypeAtom         Type
+  HiLink dmTypeModifier     PreProc  " TODO Custom type for this
+  HiLink dmTypeDeclaration  PreProc
 
   HiLink dmInt      Number
   HiLink dmFloat    Float
   HiLink dmString   String
+
+  HiLink dmOperatorBool         Operator
+  HiLink dmOperatorComp         Operator
+  HiLink dmOperatorMath         Operator
+  HiLink dmOperatorBit          Operator
+  HiLink dmOperatorAssign       Operator
+  HiLink dmOperatorAssignMath   Operator
+  HiLink dmOperatorAssignBit    Operator
+  HiLink dmOperatorConditional  Operator
+  HiLink dmOperatorDereference  Operator
+  HiLink dmOperatorPath         Operator
 
 "  HiLink pbSyntax       Include
 "  HiLink pbStructure    Structure
