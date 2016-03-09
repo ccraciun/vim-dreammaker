@@ -9,15 +9,21 @@ elseif exists("b:current_syntax")
   finish
 endif
 
-syn match   dmInt   /-\?\<\d\+\>/
-syn match   dmInt   /\<0[xX]\x+\>/
-syn match   dmFloat /\<-\?\d*\(\.\d*\)\?\([eE]\d+\)\?/
-syn region  dmString  start=/"/ skip=/\\"/ end=/"/
-syn region  dmString  start=/'/ skip=/\\'/ end=/'/
+syn case    match
 
-syn keyword dmTodo TODO FIXME XXX NOTE
-syn region  dmComment start="/\*" end="\*/" keepend contains=dmTodo
-syn region  dmComment start="//" end="$" keepend
+syn match   dmInt       /-\?\<\d\+\>/
+syn match   dmInt       /\<0[xX]\x+\>/
+
+syn match   dmFloat     "\<\d\+\.\d*\([Ee][-+]\?\d\+\)\?\>"
+syn match   dmFloat     "\<\.\d\+\([Ee][-+]\?\d\+\)\?\>"
+syn match   dmFloat     "\<\d\+[Ee][-+]\?\d\+\>"
+
+syn region  dmString    start=/"/ skip=/\\"/ end=/"/
+syn region  dmString    start=/'/ skip=/\\'/ end=/'/
+
+syn keyword dmTodo      TODO FIXME XXX NOTE
+syn region  dmComment   start="/\*" end="\*/" keepend contains=dmTodo
+syn region  dmComment   start="//" end="$" keepend
 
 syn keyword dmKeywordControl    sleep spawn break continue do
 syn keyword dmKeywordControl    else for goto if return switch while
