@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language: Dream Maker
-" Maintainer: Kevin Lauder
-" Latest Revision: 26 April 2008
+" Maintainer: ccraciun
+" Latest Revision: 31 Mar 2016
 
 if version < 600
   syntax clear
@@ -30,15 +30,16 @@ syn region  dmIncluded          display contained start=+"+ skip=+\\\\\|\\"+ end
 syn match   dmIncluded          display contained "<[^>]*>"
 syn match   dmInclude           display "^\s*\(#\)\s*include\>\s*["<]" contains=dmIncluded
 
-syn keyword dmMacroSpecial      FILE_DIR DEBUG DM_VERSION __FILE__ __LINE__ __MAIN__ display
-syn keyword dmMacroDefined      defined display contained
+syn keyword dmMacroSpecial      display FILE_DIR DEBUG DM_VERSION __FILE__ __LINE__ __MAIN__
+syn keyword dmMacroDefined      display contained defined
 
 syn cluster dmPreprocGroup      contains=dmDefine,dmPreProc,dmPreCondit,dmPreConditMatch,dmInclude,dmIncluded
 
 """ String Immediates
 
 "" String escapes, interpolation, entities, macros
-syn match   dmStringEscape      display contained +\\\(n\|\"\|\/\|<\|>\|(space)\|(newline)\)+
+syn match   dmStringEscape      display contained +\\[abfnrtv\\'"<>]+
+syn match   dmStringEscape      display contained +\\\((space)\|(newline)\)+
 syn match   dmStringMacro       contained display +\\\([Hh]is\|[Hh]ers\|[Tt]he\|[Aa]n\?\|[Hh]e\|[Ss]he\|him\|himself\|herself\|hers\|\(im\)\?proper\|th\|s\|icon\|ref\|[Rr]oman\|\.\.\.\)\>+
 syn region  dmStringInterp      contained start=/\[/ end=/\]/ contains=ALLBUT,dmPreprocGroup keepend
 syn match   dmStringEntity      contained /&\w\w*;/
@@ -140,8 +141,7 @@ syn match   dmOperatorPath          /^\s*\/\ze[^*\/]/
 syn region  dmBlock         start="{" end="}" transparent fold
 syn region  dmParen         start="(" end=")" transparent
 
-syn keyword dmObjectProperty    name gender desc suffix text icon
-syn match   dmObjectProperty    /icon_state/
+syn keyword dmObjectProperty    name gender desc suffix text icon icon_state
 syn keyword dmObjectProperty    dir overlays underlays visibility luminosity
 syn keyword dmObjectProperty    opacity density contents verbs type
 syn keyword dmObjectLocation    loc x y z
@@ -212,20 +212,6 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmObjectMobProperty    Identifier
   HiLink dmVerbProperty         Identifier
   HiLink dmListProperty         Identifier
-
-"  HiLink pbSyntax       Include
-"  HiLink pbStructure    Structure
-"  HiLink pbRepeat       Repeat
-"  HiLink pbDefault      Keyword
-"  HiLink pbExtend       Keyword
-"  HiLink pbRPC          Keyword
-"  HiLink pbType         Type
-"  HiLink pbTypedef      Typedef
-"  HiLink pbBool         Boolean
-"
-"  HiLink pbInt          Number
-"  HiLink pbFloat        Float
-"  HiLink pbString       String
 
   delcommand HiLink
 endif
