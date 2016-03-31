@@ -2,6 +2,8 @@
 
 Vim syntax plugin for dream maker.
 
+![vim-dreammaker](http://i.imgur.com/zixac2M.png?1)
+
 ## Installation
 
 *  [Pathogen](https://github.com/tpope/vim-pathogen)
