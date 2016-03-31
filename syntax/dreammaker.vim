@@ -18,16 +18,24 @@ syn match   dmFloat     "\<\d\+\.\d*\([Ee][-+]\?\d\+\)\?\>"
 syn match   dmFloat     "\<\.\d\+\([Ee][-+]\?\d\+\)\?\>"
 syn match   dmFloat     "\<\d\+[Ee][-+]\?\d\+\>"
 
-" TODO: preprocessor/macros
-"syn region  dmDefine    start="^\s*\(%:\|#\)\s*\(define\|undef\)\>" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup
-"syn region  dmPreProc   start="^\s*\(%:\|#\)\s*\(pragma\>\|line\>\|warning\>\|warn\>\|error\>\)" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup
+syn region  dmDefine            start="^\s*\(#\)\s*\(define\|undef\)\>" skip="\\$" end="$" keepend contains=ALL
+syn region  dmPreProc           start="^\s*\(#\)\s*\(error\>\)" skip="\\$" end="$" keepend
+syn region  dmPreCondit         start="^\s*\(#\)\s*\(if\|ifdef\|ifndef\|elif\)\>" skip="\\$" end="$" keepend contains=dmMacroDefined
+syn match   dmPreConditMatch    display "^\s*\(#\)\s*\(else\|endif\)\>"
+syn region  dmIncluded          display contained start=+"+ skip=+\\\\\|\\"+ end=+"+
+syn match   dmIncluded          display contained "<[^>]*>"
+syn match   dmInclude           display "^\s*\(#\)\s*include\>\s*["<]" contains=dmIncluded
+
+syn keyword dmMacroSpecial      FILE_DIR DEBUG DM_VERSION __FILE__ __LINE__ display
+syn keyword dmMacroDefined      defined display contained
 
 " TODO: contains string interpolation with variables, escape codes
-"syn match   dmEscape    display contained 
+"syn match   dmStringEscape    display contained 
+"syn match   dmStringInterp    display contained 
 
 syn cluster dmStringGroup   contains=dmStringInterp,dmStringEscape
-syn region  dmString        start=/"/ skip=/\\"/ end=/"/ contains=@dmStringGroup
-syn region  dmString        start=/'/ skip=/\\'/ end=/'/ contains=@dmStringGroup
+syn region  dmString        start=/"/ skip=/\\"/ end=/"/ contains=@dmStringGroup keepend
+syn region  dmString        start=/'/ skip=/\\'/ end=/'/ contains=@dmStringGroup keepend
 
 syn keyword dmTodo      TODO FIXME XXX NOTE
 syn region  dmComment   start="/\*" end="\*/" keepend contains=dmTodo
@@ -36,8 +44,8 @@ syn region  dmComment   start="//" end="$" keepend contains=dmTodo
 " TODO: Better handling for for/if
 syn keyword dmKeywordControl    sleep spawn break continue do
 syn keyword dmKeywordControl    else for goto if return switch while
-
 syn keyword dmKeywordMemory     new del
+syn keyword dmKeywordList       newlist typesof args
 
 syn keyword dmTypeAtom  var proc verb datum obj mob turf area savefile list
 syn keyword dmTypeAtom  client sound image database matrix regex exception
@@ -106,6 +114,7 @@ syn keyword dmObjectProperty    opacity density contents verbs type
 syn keyword dmObjectLocation    loc x y z
 syn keyword dmObjectMobProperty key ckey client sight group
 syn keyword dmVerbProperty      name desc category hidden src
+syn keyword dmListProperty      len
 
 syn match   dmVariableSelf      /\<\.\>/  " TODO: make sure this is matched only by itself
 
@@ -117,11 +126,21 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
     command -nargs=+ HiLink hi def link <args>
   endif
 
+  HiLink dmInclude          Include
+  HiLink dmIncluded         String
+  HiLink dmPreProc          PreProc
+  HiLink dmDefine           Macro
+  HiLink dmPreCondit        PreCondit
+  HiLink dmPreConditMatch   PreCondit
+  HiLink dmMacroDefined     Keyword
+  HiLink dmMacroSpecial     Keyword
+
   HiLink dmTodo         Todo
   HiLink dmComment      Comment
 
   HiLink dmKeywordControl   Keyword
   HiLink dmKeywordMemory    Keyword
+  HiLink dmKeywordList      Keyword
 
   HiLink dmTypeAtom         Type
   HiLink dmTypeModifier     PreProc  " TODO Custom type for this
@@ -150,6 +169,7 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmObjectLocation       Identifier
   HiLink dmObjectMobProperty    Identifier
   HiLink dmVerbProperty         Identifier
+  HiLink dmListProperty         Identifier
 
 "  HiLink pbSyntax       Include
 "  HiLink pbStructure    Structure
