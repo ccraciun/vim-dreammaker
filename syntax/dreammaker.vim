@@ -11,12 +11,16 @@ endif
 
 syn case    match
 
+""" Int/Float Immediates
+
 syn match   dmInt       /-\?\<\d\+\>/
 syn match   dmInt       /\<0[xX]\x+\>/
 
 syn match   dmFloat     "\<\d\+\.\d*\([Ee][-+]\?\d\+\)\?\>"
 syn match   dmFloat     "\<\.\d\+\([Ee][-+]\?\d\+\)\?\>"
 syn match   dmFloat     "\<\d\+[Ee][-+]\?\d\+\>"
+
+""" Preprocessor
 
 syn region  dmDefine            start="^\s*\(#\)\s*\(define\|undef\)\>" skip="\\$" end="$" keepend contains=ALL
 syn region  dmPreProc           start="^\s*\(#\)\s*\(error\>\)" skip="\\$" end="$" keepend
@@ -26,16 +30,45 @@ syn region  dmIncluded          display contained start=+"+ skip=+\\\\\|\\"+ end
 syn match   dmIncluded          display contained "<[^>]*>"
 syn match   dmInclude           display "^\s*\(#\)\s*include\>\s*["<]" contains=dmIncluded
 
-syn keyword dmMacroSpecial      FILE_DIR DEBUG DM_VERSION __FILE__ __LINE__ display
+syn keyword dmMacroSpecial      FILE_DIR DEBUG DM_VERSION __FILE__ __LINE__ __MAIN__ display
 syn keyword dmMacroDefined      defined display contained
 
-" TODO: contains string interpolation with variables, escape codes
-"syn match   dmStringEscape    display contained 
-"syn match   dmStringInterp    display contained 
+syn cluster dmPreprocGroup      contains=dmDefine,dmPreProc,dmPreCondit,dmPreConditMatch,dmInclude,dmIncluded
 
-syn cluster dmStringGroup   contains=dmStringInterp,dmStringEscape
+""" String Immediates
+
+"" String escapes, interpolation, entities, macros
+syn match   dmStringEscape      display contained +\\\(n\|\"\|\/\|<\|>\|(space)\|(newline)\)+
+syn match   dmStringMacro       contained display +\\\([Hh]is\|[Hh]ers\|[Tt]he\|[Aa]n\?\|[Hh]e\|[Ss]he\|him\|himself\|herself\|hers\|\(im\)\?proper\|th\|s\|icon\|ref\|[Rr]oman\|\.\.\.\)\>+
+syn region  dmStringInterp      contained start=/\[/ end=/\]/ contains=ALLBUT,dmPreprocGroup keepend
+syn match   dmStringEntity      contained /&\w\w*;/
+
+"" String Html
+syn case ignore
+
+" TODO: smarter html tags, basic error checking.
+syn keyword dmHtmlTagName       contained a acronym b big body br cite code dfn div em font
+syn keyword dmHtmlTagName       contained h1 h2 h3 h4 h5 h6 head html i img kbd p pre s samp small
+syn keyword dmHtmlTagName       contained span strong style title tt u var xmp beep
+
+syn keyword dmHtmlArg           contained class face color size href title style
+
+syn match   dmHtmlTagN      contained +<\s*[-a-zA-Z0-9]\++hs=s+1 contains=dmHtmlTagName
+syn match   dmHtmlTagN      contained +</\s*[-a-zA-Z0-9]\++hs=s+2 contains=dmHtmlTagName
+syn region  dmHtmlTag       contained start=+<[^/]+ end=+>+ contains=dmHtmlTagN,dmHtmlArg
+syn region  dmHtmlEndTag    contained start=+</+    end=+>+ contains=dmHtmlTagN
+
+syn cluster dmStringHtml        contains=dmHtmlTag,dmHtmlEndTag
+
+"" The actual string
+
+syn cluster dmStringGroup   contains=dmStringInterp,dmStringEscape,dmStringMacro,dmStringEntity,@dmStringHtml
 syn region  dmString        start=/"/ skip=/\\"/ end=/"/ contains=@dmStringGroup keepend
 syn region  dmString        start=/'/ skip=/\\'/ end=/'/ contains=@dmStringGroup keepend
+syn region  dmString        start=/{"/ skip=/\\'/ end=/"}/ contains=@dmStringGroup keepend
+
+syn case match
+""" Comments
 
 syn keyword dmTodo      TODO FIXME XXX NOTE
 syn region  dmComment   start="/\*" end="\*/" keepend contains=dmTodo
@@ -149,6 +182,15 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmInt      Number
   HiLink dmFloat    Float
   HiLink dmString   String
+
+  HiLink dmStringEscape     Special
+  HiLink dmStringMacro      Special
+  HiLink dmStringEntity     Special
+
+  HiLink dmHtmlTag      Function
+  HiLink dmHtmlEndTag   Identifier
+  HiLink dmHtmlTagName  Statement
+  HiLink dmHtmlArg      Type
 
   HiLink dmOperatorBool         Operator
   HiLink dmOperatorComp         Operator
