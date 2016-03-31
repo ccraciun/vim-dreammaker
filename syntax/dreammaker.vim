@@ -23,7 +23,7 @@ syn match   dmFloat     "\<\d\+[Ee][-+]\?\d\+\>"
 """ Preprocessor
 
 syn region  dmDefine            start="^\s*\(#\)\s*\(define\|undef\)\>" skip="\\$" end="$" keepend contains=ALL
-syn region  dmPreProc           start="^\s*\(#\)\s*\(error\>\)" skip="\\$" end="$" keepend
+syn region  dmPreProc           start="^\s*\(#\)\s*\(warn\>\|error\>\)" skip="\\$" end="$" keepend
 syn region  dmPreCondit         start="^\s*\(#\)\s*\(if\|ifdef\|ifndef\|elif\)\>" skip="\\$" end="$" keepend contains=dmMacroDefined
 syn match   dmPreConditMatch    display "^\s*\(#\)\s*\(else\|endif\)\>"
 syn region  dmIncluded          display contained start=+"+ skip=+\\\\\|\\"+ end=+"+
