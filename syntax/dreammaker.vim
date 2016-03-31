@@ -18,9 +18,16 @@ syn match   dmFloat     "\<\d\+\.\d*\([Ee][-+]\?\d\+\)\?\>"
 syn match   dmFloat     "\<\.\d\+\([Ee][-+]\?\d\+\)\?\>"
 syn match   dmFloat     "\<\d\+[Ee][-+]\?\d\+\>"
 
-syn region  dmString    start=/"/ skip=/\\"/ end=/"/
-syn region  dmString    start=/'/ skip=/\\'/ end=/'/
+" TODO: preprocessor/macros
+"syn region  dmDefine    start="^\s*\(%:\|#\)\s*\(define\|undef\)\>" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup
+"syn region  dmPreProc   start="^\s*\(%:\|#\)\s*\(pragma\>\|line\>\|warning\>\|warn\>\|error\>\)" skip="\\$" end="$" keepend contains=ALLBUT,@cPreProcGroup
+
 " TODO: contains string interpolation with variables, escape codes
+"syn match   dmEscape    display contained 
+
+syn cluster dmStringGroup   contains=dmStringInterp,dmStringEscape
+syn region  dmString        start=/"/ skip=/\\"/ end=/"/ contains=@dmStringGroup
+syn region  dmString        start=/'/ skip=/\\'/ end=/'/ contains=@dmStringGroup
 
 syn keyword dmTodo      TODO FIXME XXX NOTE
 syn region  dmComment   start="/\*" end="\*/" keepend contains=dmTodo
@@ -36,9 +43,6 @@ syn keyword dmTypeAtom  var proc verb datum obj mob turf area savefile list
 syn keyword dmTypeAtom  client sound image database matrix regex exception
 syn keyword dmTypeAtom  null text atom
 
-"syn match   dmType  "(var|proc|verb|datum|obj|mob|turf|area|savefile|list|client|sound|image|database|matrix|regex|exception|null|text|atom)\s*|?" contains=dmTypeAtom nextgroup=dmType skipwhite
-" TODO: Still needed or not?
-
 syn keyword dmTypeModifier  const global set static tmp
 syn keyword dmTypeDeclaration  as "  nextgroup=dmType
 
@@ -52,12 +56,12 @@ syn match   dmOperatorComp      /</
 syn match   dmOperatorComp      />/
 syn match   dmOperatorComp      /<=/
 syn match   dmOperatorComp      />=/
-syn match   dmOperatorMath      /\s+\s/
-syn match   dmOperatorMath      /\s-/
-syn match   dmOperatorMath      /\s\*\s/
-syn match   dmOperatorMath      /\s\/\s/
-syn match   dmOperatorMath      /\s\*\*\s/
-syn match   dmOperatorMath      /\s%\s/
+syn match   dmOperatorMath      /\s+\s/ms=s+1,me=e-1
+syn match   dmOperatorMath      /\s-/ms=s+1
+syn match   dmOperatorMath      /\s\*\s/ms=s+1,me=e-1
+syn match   dmOperatorMath      /\s\/\s/ms=s+1,me=e-1
+syn match   dmOperatorMath      /\s\*\*\s/ms=s+1,me=e-1
+syn match   dmOperatorMath      /\s%\s/ms=s+1,me=e-1
 syn match   dmOperatorMath      /++/
 syn match   dmOperatorMath      /--/
 syn match   dmOperatorBit       /\~/
@@ -85,25 +89,25 @@ syn match   dmOperatorDereference   /\w:\w/ms=s+1,me=e-1
 
 syn match   dmOperatorLookup        /\s\.\w/ms=s+1,me=e-1
 
-syn match   dmOperatorParent        /\.\.\ze\s*(/
+syn match   dmOperatorParent        /\.\.\ze\s*(.*)/
 
 syn keyword dmOperatorContains      in
 
-" TODO broken around keywords. eg. /obj/item
-syn match   dmOperatorPath          /\w\/\w/ms=s+1,me=e-1
+syn match   dmOperatorPath          /\/\w/me=e-1
 syn match   dmOperatorPath          /^\s*\/\ze[^*\/]/
 
 syn region  dmBlock         start="{" end="}" transparent fold
 syn region  dmParen         start="(" end=")" transparent
 
-"syn keyword dmObjectProperty    name gender desc suffix text icon
-"syn match   dmObjectProperty    /icon_state/
-"syn keyword dmObjectProperty    dir overlays underlays visibility luminosity
-"syn keyword dmObjectProperty    opacity density contents verbs type
-"syn keyword dmObjectLocation    loc x y z
-"syn keyword dmObjectMobProperty key ckey client sight group
-"syn keyword dmVerbProperty      name desc category hidden src
-"syn match   dmVariableSelf      /\<\.\>/  " TODO make sure this is matched only by itself
+syn keyword dmObjectProperty    name gender desc suffix text icon
+syn match   dmObjectProperty    /icon_state/
+syn keyword dmObjectProperty    dir overlays underlays visibility luminosity
+syn keyword dmObjectProperty    opacity density contents verbs type
+syn keyword dmObjectLocation    loc x y z
+syn keyword dmObjectMobProperty key ckey client sight group
+syn keyword dmVerbProperty      name desc category hidden src
+
+syn match   dmVariableSelf      /\<\.\>/  " TODO: make sure this is matched only by itself
 
 if version >= 508 || !exists("did_dreammaker_syn_inits")
   if version < 508
@@ -137,6 +141,15 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmOperatorConditional  Operator
   HiLink dmOperatorDereference  Operator
   HiLink dmOperatorPath         Operator
+  HiLink dmOperatorLookup       Operator
+  HiLink dmOperatorParent       Operator
+
+  HiLink dmOperatorContains     Operator
+
+  HiLink dmObjectProperty       Identifier
+  HiLink dmObjectLocation       Identifier
+  HiLink dmObjectMobProperty    Identifier
+  HiLink dmVerbProperty         Identifier
 
 "  HiLink pbSyntax       Include
 "  HiLink pbStructure    Structure
