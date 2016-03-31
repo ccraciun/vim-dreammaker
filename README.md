@@ -4,6 +4,10 @@ Vim syntax plugin for dream maker.
 
 ![vim-dreammaker](http://i.imgur.com/zixac2M.png?1)
 
+## Alternatives
+
+* [vim-dm-syntax](https://github.com/wlue/vim-dm-syntax)
+
 ## Installation
 
 *  [Pathogen](https://github.com/tpope/vim-pathogen)
