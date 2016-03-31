@@ -15,4 +15,5 @@ Vim syntax plugin for dream maker.
 
 ## Still missing
 
-A lot of predefined procs are not highlighted.
+* A lot of predefined procs are not highlighted.
+* Maybe integration with the build system.
