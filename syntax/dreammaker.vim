@@ -68,6 +68,7 @@ syn keyword dmKeywordControl    sleep spawn break continue do
 syn keyword dmKeywordControl    else for goto if return switch while to try catch
 syn keyword dmKeywordMemory     new del
 syn keyword dmKeywordList       newlist typesof args arglist
+syn keyword dmKeywordConstant   TRUE FALSE
 
 syn keyword dmLangProc          contained ASSERT CRASH EXCEPTION addtext alert animate block bounds
 syn keyword dmLangProc          contained bounds_dist browse browse_rsc call ckey ckeyEx fcopy fcopy_rsc fdel
@@ -185,6 +186,8 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmKeywordControl   Keyword
   HiLink dmKeywordMemory    Keyword
   HiLink dmKeywordList      Keyword
+
+  HiLink dmKeywordConstant  Constant
 
   HiLink dmTypeAtom         Type
   HiLink dmTypeModifier     PreProc  " TODO Custom type for this
