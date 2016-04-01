@@ -46,29 +46,16 @@ syn region  dmStringInterp      contained start=/\[/ end=/\]/ contains=ALLBUT,dm
 syn match   dmStringEntity      contained /&\w\w*;/
 
 "" String Html
+syntax include @HTML syntax/html.vim
 
-" TODO: smarter html tags, basic error checking.
-syn case ignore
-syn keyword dmHtmlTagName       contained a acronym b big body br cite code dfn div em font
-syn keyword dmHtmlTagName       contained h1 h2 h3 h4 h5 h6 head html i img kbd p pre s samp small
-syn keyword dmHtmlTagName       contained span strong style title tt u var xmp beep ul li
-
-syn keyword dmHtmlArg           contained class face color size href title style
-syn case match
-
-syn match   dmHtmlTagN      contained +<\s*[-a-zA-Z0-9]\++hs=s+1 contains=dmHtmlTagName
-syn match   dmHtmlTagN      contained +</\s*[-a-zA-Z0-9]\++hs=s+2 contains=dmHtmlTagName
-syn region  dmHtmlTag       contained start=+<[^/]+ end=+>+ contains=dmHtmlTagN,dmHtmlArg
-syn region  dmHtmlEndTag    contained start=+</+    end=+>+ contains=dmHtmlTagN
-
-syn cluster dmStringHtml        contains=dmHtmlTag,dmHtmlEndTag
+syntax sync fromstart
 
 "" The actual string
 
-syn cluster dmStringGroup   contains=dmStringInterp,dmStringEscape,dmStringMacro,dmStringEntity,@dmStringHtml
+syn cluster dmStringGroup   contains=dmStringInterp,dmStringEscape,dmStringMacro,dmStringEntity,@HTML
 syn region  dmString        start=/"/ skip=/\\"/ end=/"/ contains=@dmStringGroup keepend
 syn region  dmString        start=/'/ skip=/\\'/ end=/'/ contains=@dmStringGroup keepend
-syn region  dmString        start=/{"/ skip=/\\'/ end=/"}/ contains=@dmStringGroup keepend
+syn region  dmString        start=/{"/ skip=/\\"/ end=/"}/ contains=@dmStringGroup keepend
 
 """ Comments
 
@@ -207,11 +194,6 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmStringEscape     Special
   HiLink dmStringMacro      Special
   HiLink dmStringEntity     Special
-
-  HiLink dmHtmlTag      Function
-  HiLink dmHtmlEndTag   Identifier
-  HiLink dmHtmlTagName  Statement
-  HiLink dmHtmlArg      Type
 
   HiLink dmOperatorBool         Operator
   HiLink dmOperatorComp         Operator
