@@ -51,7 +51,7 @@ syn match   dmStringEntity      contained /&\w\w*;/
 syn case ignore
 syn keyword dmHtmlTagName       contained a acronym b big body br cite code dfn div em font
 syn keyword dmHtmlTagName       contained h1 h2 h3 h4 h5 h6 head html i img kbd p pre s samp small
-syn keyword dmHtmlTagName       contained span strong style title tt u var xmp beep
+syn keyword dmHtmlTagName       contained span strong style title tt u var xmp beep ul li
 
 syn keyword dmHtmlArg           contained class face color size href title style
 syn case match
