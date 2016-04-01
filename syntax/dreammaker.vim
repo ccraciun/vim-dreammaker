@@ -64,11 +64,12 @@ syn region  dmComment   start="/\*" end="\*/" keepend contains=dmTodo
 syn region  dmComment   start="//" end="$" keepend contains=dmTodo
 
 " TODO: Better handling for for/if/switch
-syn keyword dmKeywordControl    sleep spawn break continue do
-syn keyword dmKeywordControl    else for goto if return switch while to try catch
-syn keyword dmKeywordMemory     new del
-syn keyword dmKeywordList       newlist typesof args arglist
-syn keyword dmKeywordConstant   TRUE FALSE
+syn keyword dmKeywordControl        sleep spawn break continue do
+syn keyword dmKeywordControl        for goto return while to try catch
+syn keyword dmKeywordConditional    if else switch
+syn keyword dmKeywordMemory         new del
+syn keyword dmKeywordList           newlist typesof args arglist
+syn keyword dmKeywordConstant       TRUE FALSE
 
 syn keyword dmLangProc          contained ASSERT CRASH EXCEPTION addtext alert animate block bounds
 syn keyword dmLangProc          contained bounds_dist browse browse_rsc call ckey ckeyEx fcopy fcopy_rsc fdel
@@ -135,8 +136,7 @@ syn match   dmOperatorAssignBit     /^=/
 syn match   dmOperatorConditional   contained /?/
 syn match   dmOperatorConditional   contained /:/
 
-" TODO: not working correctly.
-syn match   dmOperatorConditionalRegion +?.*:+ extend contains=ALLBUT,@dmPreprocGroup
+syn match   dmOperatorConditionalRegion +\s?\s.*\s:\s+ extend contains=ALLBUT,@dmPreprocGroup
 
 syn match   dmOperatorDereference   /\w\.\w/ms=s+1,me=e-1
 syn match   dmOperatorDereference   /\w:\w/ms=s+1,me=e-1
@@ -183,9 +183,10 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmTodo         Todo
   HiLink dmComment      Comment
 
-  HiLink dmKeywordControl   Keyword
-  HiLink dmKeywordMemory    Keyword
-  HiLink dmKeywordList      Keyword
+  HiLink dmKeywordControl       Keyword
+  HiLink dmKeywordMemory        Keyword
+  HiLink dmKeywordList          Keyword
+  HiLink dmKeywordConditional   Conditional
 
   HiLink dmKeywordConstant  Constant
 
