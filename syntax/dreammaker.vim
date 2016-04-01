@@ -42,7 +42,7 @@ syn cluster dmPreprocGroup      contains=dmDefine,dmPreProc,dmPreCondit,dmPreCon
 syn match   dmStringEscape      display contained +\\[abfnrtv\\'"<>]+
 syn match   dmStringEscape      display contained +\\\((space)\|(newline)\)+
 syn match   dmStringMacro       contained display +\\\([Hh]is\|[Hh]ers\|[Tt]he\|[Aa]n\?\|[Hh]e\|[Ss]he\|him\|himself\|herself\|hers\|\(im\)\?proper\|th\|s\|icon\|ref\|[Rr]oman\|\.\.\.\)\>+
-syn region  dmStringInterp      contained start=/\[/ end=/\]/ contains=ALLBUT,dmPreprocGroup keepend
+syn region  dmStringInterp      contained start=/\[/ end=/\]/ contains=ALLBUT,dmPreprocGroup extend keepend
 syn match   dmStringEntity      contained /&\w\w*;/
 
 "" String Html
@@ -131,8 +131,11 @@ syn match   dmOperatorAssignBit     /&=/
 syn match   dmOperatorAssignBit     /|=/
 syn match   dmOperatorAssignBit     /^=/
 
-syn match   dmOperatorConditional   /\s\?\s/ms=s+1,me=e-1
-syn match   dmOperatorConditional   /\s:\s/ms=s+1,me=e-1
+syn match   dmOperatorConditional   contained /?/
+syn match   dmOperatorConditional   contained /:/
+
+" TODO: not working correctly.
+syn match   dmOperatorConditionalRegion +?.*:+ extend contains=ALLBUT,@dmPreprocGroup
 
 syn match   dmOperatorDereference   /\w\.\w/ms=s+1,me=e-1
 syn match   dmOperatorDereference   /\w:\w/ms=s+1,me=e-1
