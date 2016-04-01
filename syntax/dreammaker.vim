@@ -2,6 +2,7 @@
 " Language: Dream Maker
 " Maintainer: ccraciun
 " Latest Revision: 31 Mar 2016
+" Bits of code adapted from c.vim and html.vim
 
 if version < 600
   syntax clear
@@ -75,11 +76,31 @@ syn keyword dmTodo      TODO FIXME XXX NOTE
 syn region  dmComment   start="/\*" end="\*/" keepend contains=dmTodo
 syn region  dmComment   start="//" end="$" keepend contains=dmTodo
 
-" TODO: Better handling for for/if
+" TODO: Better handling for for/if/switch
 syn keyword dmKeywordControl    sleep spawn break continue do
-syn keyword dmKeywordControl    else for goto if return switch while
+syn keyword dmKeywordControl    else for goto if return switch while to try catch
 syn keyword dmKeywordMemory     new del
-syn keyword dmKeywordList       newlist typesof args
+syn keyword dmKeywordList       newlist typesof args arglist
+
+syn keyword dmLangProc          contained ASSERT CRASH EXCEPTION addtext alert animate block bounds
+syn keyword dmLangProc          contained bounds_dist browse browse_rsc call ckey ckeyEx fcopy fcopy_rsc fdel
+syn keyword dmLangProc          contained fexists file file2text text2file flick flist ftp get_dir get_dist
+syn keyword dmLangProc          contained get_step get_step_away get_step_rand get_step_to get_step_towards
+syn keyword dmLangProc          contained hascall hearers html_decode html_encode icon_states image initial input
+syn keyword dmLangProc          contained isarea isfile isicon isloc ismob isnull isnum isobj ispath issaved
+syn keyword dmLangProc          contained istext isturf istype length link list2params params2list locate log
+syn keyword dmLangProc          contained matrix md5 obounds ohearers orange output oview oviewers rgb run
+syn keyword dmLangProc          contained shell shutdown sleep sound spawn startup stat statpanel step
+syn keyword dmLangProc          contained step_away step_rand step_to step_towards turn view viewers walk
+syn keyword dmLangProc          contained walk_away walk_rand walk_to walk_towards winclone winexists winget
+syn keyword dmLangProc          contained winset winshow
+syn keyword dmLangProcMath      contained abs arcsin arccos sin cos max min prob pick rand rand_seed range
+syn keyword dmLangProcMath      contained roll round sqrt
+syn keyword dmLangProcText      contained ascii2text text2ascii cmptext cmptextEx copytext findtext findtextEx
+syn keyword dmLangProcText      contained lentext lowertext uppertext num2text text2num sorttext sorttextEx
+syn keyword dmLangProcText      contained text time2text url_decode url_encode
+
+syn match   dmProcCall          /\w\w*\s*(/ contains=dmLangProc,dmLangProcMath,dmLangProcText
 
 syn keyword dmTypeAtom  var proc verb datum obj mob turf area savefile list
 syn keyword dmTypeAtom  client sound image database matrix regex exception
@@ -149,7 +170,7 @@ syn keyword dmObjectMobProperty key ckey client sight group
 syn keyword dmVerbProperty      name desc category hidden src
 syn keyword dmListProperty      len
 
-syn match   dmVariableSelf      /\<\.\>/  " TODO: make sure this is matched only by itself
+syn match   dmVariableSelf      /\<\.\>/
 
 if version >= 508 || !exists("did_dreammaker_syn_inits")
   if version < 508
@@ -212,6 +233,10 @@ if version >= 508 || !exists("did_dreammaker_syn_inits")
   HiLink dmObjectMobProperty    Identifier
   HiLink dmVerbProperty         Identifier
   HiLink dmListProperty         Identifier
+
+  HiLink dmLangProc         Identifier
+  HiLink dmLangProcMath     Identifier
+  HiLink dmLangProcText     Identifier
 
   delcommand HiLink
 endif
